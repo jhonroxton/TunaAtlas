@@ -18,22 +18,22 @@ function latLonToVec3(lat: number, lon: number, r = EARTH_R): THREE.Vector3 {
 }
 
 // ── 金枪鱼精灵纹理 ───────────────────────────────────────────────────
-function makeTunaTexture(color: string): THREE.CanvasTexture {
+function makeTunaTexture(colorHex: string): THREE.CanvasTexture {
   const cv = document.createElement('canvas')
   cv.width = 128; cv.height = 80
   const ctx = cv.getContext('2d')!
   ctx.clearRect(0, 0, 128, 80)
 
-  // 发光光晕
+  // 发光光晕（用 hex 颜色，alpha 用 rgba 格式）
   const glow = ctx.createRadialGradient(64, 40, 0, 64, 40, 50)
-  glow.addColorStop(0, color + 'aa')
-  glow.addColorStop(0.4, color + '44')
-  glow.addColorStop(1, color + '00')
+  glow.addColorStop(0, `${colorHex}cc`)
+  glow.addColorStop(0.4, `${colorHex}44`)
+  glow.addColorStop(1, `${colorHex}00`)
   ctx.fillStyle = glow
   ctx.fillRect(0, 0, 128, 80)
 
   // 身体
-  ctx.fillStyle = color
+  ctx.fillStyle = colorHex
   ctx.beginPath()
   ctx.ellipse(58, 40, 38, 15, 0, 0, Math.PI * 2)
   ctx.fill()
@@ -194,8 +194,8 @@ export default function Globe({ paths, activeSpecies }: Props) {
         pathLines.push(line)
 
         // ── 添加金枪鱼精灵 ───────────────────────────────────
-        const colorStr = new THREE.Color(path.color).getStyle()
-        const tex = makeTunaTexture(colorStr)
+        const colorHex = path.color // 使用原始 hex 颜色，如 #E84545
+        const tex = makeTunaTexture(colorHex)
         const mat = new THREE.SpriteMaterial({
           map: tex,
           transparent: true,
